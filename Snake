@@ -1,0 +1,99 @@
+package game
+
+import scala.collection.mutable.Buffer
+import scala.util.Random
+import scala.reflect.ClassTag
+
+class Snake(val world: World, initialX: Int, initialY: Int, initialDirection: Int) extends Square {
+  var snake = Buffer[Square]()
+  var length = 3
+  var facingDirection = 1 // 1=north, 2=east, 3=south, 4=west
+  var currentX = initialX
+  var currentY = initialY
+
+  /*
+   * Yläluokka, joka saa guista syötteen seuraavalle koordinatille 
+   */
+
+  def move(nextSquare: Square) = {
+    if (nextSquare.isUnpassable == false) {
+      if (facingDirection == 1) { //if facing north
+        if (nextSquare.locationY < currentY) {
+          moveForward(nextSquare)
+        } else if (nextSquare.locationX > currentX) {
+          moveRight(nextSquare)
+        } else
+          moveLeft(nextSquare)
+      }
+
+      if (facingDirection == 2) { //if facing east
+        if (nextSquare.locationX > currentX) {
+          moveForward(nextSquare)
+        } else if (nextSquare.locationY > currentY) {
+          moveRight(nextSquare)
+        } else
+          moveLeft(nextSquare)
+      }
+
+      if (facingDirection == 3) { //if facing south
+        if (nextSquare.locationY > currentY) {
+          moveForward(nextSquare)
+        } else if (nextSquare.locationX > currentX) {
+          moveRight(nextSquare)
+        } else
+          moveLeft(nextSquare)
+      }
+
+      if (facingDirection == 4) { //if facing west
+        if (nextSquare.locationX < currentX) {
+          moveForward(nextSquare)
+        } else if (nextSquare.locationY > currentY) {
+          moveRight(nextSquare)
+        } else
+          moveLeft(nextSquare)
+      }
+
+    } else if (nextSquare.hasTreat) {
+      eat
+    } else {
+      destroy
+    }
+  }
+
+  def moveForward(nextSquare: Square) = {
+    snake += nextSquare
+    snake.dropRight(1) //Lassen GUI hoitaa liikkumisen käyttöliittymässä 
+  }
+
+  def moveLeft(nextSquare: Square) = {
+    if (facingDirection != 1) {
+      facingDirection -= 1
+    } else {
+      facingDirection = 4
+    }
+    this.moveForward(nextSquare)
+
+  }
+
+  def moveRight(nextSquare: Square) = {
+    if (facingDirection != 4) {
+      facingDirection += 1
+    } else {
+      facingDirection = 1
+    }
+    this.moveForward(nextSquare)
+
+  }
+
+  /*
+ * syö ja kutsu syömisääntä myös
+ */
+  def eat = {
+
+  }
+
+  def destroy = {
+
+  }
+
+}
